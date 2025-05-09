@@ -1,0 +1,2 @@
+overrides:
+  '@farcaster/auth-client': link:../../Library/pnpm/global/5/node_modules/@farcaster/auth-client
