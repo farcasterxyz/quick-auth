@@ -46,20 +46,20 @@ app.post('/verify-siwf', async (c) => {
     if (!domain) {
       return c.json({ error: 'Domain is required' }, 400);
     }
-    
+
     const verifyResult = await verifyMessage(c.env, { domain, message, signature });
-    
+
     if (verifyResult.isValid) {
-      const token = await createJWT({ 
+      const token = await createJWT({
         env: c.env,
-        fid: verifyResult.fid, 
-        address: verifyResult.address, 
-        domain 
+        fid: verifyResult.fid,
+        address: verifyResult.address,
+        domain
       });
-      
+
       return c.json({ valid: true, token });
     }
-    
+
     return c.json({ valid: false });
   } catch (error) {
     console.error('Error verifying message');
@@ -70,7 +70,7 @@ app.post('/verify-siwf', async (c) => {
 app.post('/verify-token', async (c) => {
   try {
     const { token, domain } = await c.req.json<{ token: string; domain: string; }>();
-    
+
     if (!token) {
       return c.json({ error: 'Token is required' }, 400);
     }
@@ -78,12 +78,12 @@ app.post('/verify-token', async (c) => {
     if (!domain) {
       return c.json({ error: 'Domain is required' }, 400);
     }
-    
+
     const payload = await verifyJWT({ env: c.env, token, domain });
     if (payload) {
       return c.json({ valid: true, payload });
     }
-    
+
     return c.json({ valid: false });
   } catch (error) {
     console.error('Error verifying JWT:', error);
