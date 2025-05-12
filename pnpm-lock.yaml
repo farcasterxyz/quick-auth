@@ -4,16 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@farcaster/auth-client': link:../../Library/pnpm/global/5/node_modules/@farcaster/auth-client
-
 importers:
 
   .:
     dependencies:
       '@farcaster/auth-client':
-        specifier: link:../../Library/pnpm/global/5/node_modules/@farcaster/auth-client
-        version: link:../../Library/pnpm/global/5/node_modules/@farcaster/auth-client
+        specifier: ^0.5.0
+        version: 0.5.0(typescript@5.8.3)(zod@3.22.3)
       hono:
         specifier: ^4.7.8
         version: 4.7.8
@@ -238,6 +235,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@farcaster/auth-client@0.5.0':
+    resolution: {integrity: sha512-94dyd8vcY/aLnQH28osSx+eLj0W4vuR7A9cn5693NtX8Wttvu3Vpo5s5MkKXDu8bh+eqimmsqUeTGJfEOocVGQ==}
 
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
@@ -526,6 +526,9 @@ packages:
     resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
     hasBin: true
 
+  neverthrow@6.2.2:
+    resolution: {integrity: sha512-POR1FACqdK9jH0S2kRPzaZEvzT11wsOxLW520PQV/+vKi9dQe+hXq19EiOvYx7lSRaF5VB9lYGsPInynrnN05w==}
+
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
@@ -609,6 +612,14 @@ packages:
 
   viem@2.29.0:
     resolution: {integrity: sha512-N6GeIuuay/spDyw+5FbSuNIkVN0da+jGOjdlC0bdatIN+N0jtOf9Zfj0pbXgpIJGwnM9ocxzTRt0HZVbHBdL2Q==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  viem@2.29.2:
+    resolution: {integrity: sha512-cukRxab90jvQ+TDD84sU3qB3UmejYqgCw4cX8SfWzvh7JPfZXI3kAMUaT5OSR2As1Mgvx1EJawccwPjGqkSSwA==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
@@ -776,6 +787,16 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.4':
     optional: true
+
+  '@farcaster/auth-client@0.5.0(typescript@5.8.3)(zod@3.22.3)':
+    dependencies:
+      neverthrow: 6.2.2
+      viem: 2.29.2(typescript@5.8.3)(zod@3.22.3)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
 
   '@fastify/busboy@2.1.1': {}
 
@@ -1039,6 +1060,8 @@ snapshots:
 
   mustache@4.2.0: {}
 
+  neverthrow@6.2.2: {}
+
   ohash@2.0.11: {}
 
   ox@0.6.9(typescript@5.8.3)(zod@3.22.3):
@@ -1147,6 +1170,23 @@ snapshots:
   v8-compile-cache-lib@3.0.1: {}
 
   viem@2.29.0(typescript@5.8.3)(zod@3.22.3):
+    dependencies:
+      '@noble/curves': 1.8.2
+      '@noble/hashes': 1.7.2
+      '@scure/bip32': 1.6.2
+      '@scure/bip39': 1.5.4
+      abitype: 1.0.8(typescript@5.8.3)(zod@3.22.3)
+      isows: 1.0.6(ws@8.18.1)
+      ox: 0.6.9(typescript@5.8.3)(zod@3.22.3)
+      ws: 8.18.1
+    optionalDependencies:
+      typescript: 5.8.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+
+  viem@2.29.2(typescript@5.8.3)(zod@3.22.3):
     dependencies:
       '@noble/curves': 1.8.2
       '@noble/hashes': 1.7.2
