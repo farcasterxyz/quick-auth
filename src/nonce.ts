@@ -1,4 +1,4 @@
-export async function generateNonce(env: Cloudflare.Env, colo: string): Promise<string> {
+export async function generateNonce(env: Cloudflare.Env): Promise<string> {
   // Generate a nonce with 128 bits of entropy (16 bytes)
   const randomBytes = new Uint8Array(16);
   crypto.getRandomValues(randomBytes);
@@ -9,7 +9,7 @@ export async function generateNonce(env: Cloudflare.Env, colo: string): Promise<
     .join('');
 
   const nonceId = env.NONCE.idFromName(nonce);
-  const nonceObject = env.NONCE.get(nonceId, { locationHint: colo as DurableObjectLocationHint });
+  const nonceObject = env.NONCE.get(nonceId);
 
   await nonceObject.initialize();
 
