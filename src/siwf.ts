@@ -1,4 +1,4 @@
-import { createPublicClient, type Hex, http, PublicClient } from 'viem';
+import { createPublicClient, type Hex, http } from 'viem';
 import { optimism } from 'viem/chains';
 import { parseSiweMessage, SiweMessage } from 'viem/siwe';
 import { consumeNonce } from './nonce';
@@ -6,9 +6,9 @@ import { createAppClient, viemConnector } from '@farcaster/auth-client';
 
 
 export async function verifyMessage(
-  env: Cloudflare.Env, 
+  env: Cloudflare.Env,
   { domain, message, signature }: { domain: string; message: string; signature: string; }
-): Promise<{ isValid: true; fid: number; address: string; } | { isValid: false; message?: string; }>{
+): Promise<{ isValid: true; fid: number; address: string; } | { isValid: false; message?: string; }> {
   const publicClient = createPublicClient({
     chain: optimism,
     transport: http(env.ETH_RPC_URL)
@@ -17,7 +17,9 @@ export async function verifyMessage(
   const appClient = createAppClient({
     relay: "https://relay.farcaster.xyz",
     ethereum: viemConnector({ rpcUrl: env.ETH_RPC_URL }),
-  }, publicClient as PublicClient);
+  },
+    // @ts-expect-error 
+    publicClient);
 
   const siweMessage = parseSiweMessage(message);
   if (!siweMessage.nonce) {

@@ -23,7 +23,10 @@ app.get('/.well-known/jwks.json', async (c) => {
 
 app.post('/nonce', async (c) => {
   try {
-    const nonce = await generateNonce(c.env);
+    const nonce = await generateNonce(c.env,
+      c.req.raw.cf?.colo
+    );
+
     return c.json({ nonce });
   } catch (error) {
     console.error('Error generating nonce:', error);

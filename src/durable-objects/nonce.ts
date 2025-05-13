@@ -1,7 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 
-export class Nonce extends DurableObject<Env> {
-  constructor(ctx: DurableObjectState, env: Env) {
+export class Nonce extends DurableObject<Cloudflare.Env> {
+  constructor(ctx: DurableObjectState, env: Cloudflare.Env) {
     super(ctx, env)
   }
 
@@ -10,9 +10,9 @@ export class Nonce extends DurableObject<Env> {
       const expiresAt = Date.now() + 5 * 60 * 1000; // 5m from now
 
       await this.ctx.storage.put<number>('expiresAt', expiresAt);
-      
+
       this.ctx.storage.setAlarm(expiresAt);
-      
+
       return true;
     } catch (error) {
       return false;
@@ -25,9 +25,9 @@ export class Nonce extends DurableObject<Env> {
     if (!expiresAt || Date.now() > expiresAt) {
       return false;
     }
-    
+
     await this.cleanup();
-    
+
     return true;
   }
 
