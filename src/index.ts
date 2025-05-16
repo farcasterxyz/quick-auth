@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { Nonce } from './durable-objects/nonce';
-import { generateNonce } from './nonce';
+import { generateNonce, storeNonce } from './nonce';
 import { verifyMessage } from './siwf';
 import { createJWT, verifyJWT } from './jwt';
 
@@ -30,7 +30,8 @@ app.get('/.well-known/jwks.json', async (c) => {
 
 app.post('/nonce', async (c) => {
   try {
-    const nonce = await generateNonce(c.env);
+    const nonce = await generateNonce();
+    c.executionCtx.waitUntil(storeNonce(c.env, nonce));
     return c.json({ nonce });
   } catch (error) {
     console.error('Error generating nonce:', error);
