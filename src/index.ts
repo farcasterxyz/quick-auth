@@ -56,19 +56,18 @@ app.post('/verify-siwf', async (c) => {
     }
 
     const verifyResult = await verifyMessage(c.env, { domain, message, signature });
-
-    if (verifyResult.isValid) {
-      const token = await createJWT({
-        env: c.env,
-        fid: verifyResult.fid,
-        address: verifyResult.address,
-        domain
-      });
-
-      return c.json({ valid: true, token });
+    if (!verifyResult.isValid) {
+      return c.json({ valid: false, message: verifyResult.message });
     }
 
-    return c.json({ valid: false, message: verifyResult.message });
+    const token = await createJWT({
+      env: c.env,
+      fid: verifyResult.fid,
+      address: verifyResult.address,
+      domain
+    });
+
+    return c.json({ valid: true, token });
   } catch (error) {
     console.error('Error verifying message');
     return c.json({ error: `Failed to verify message: ${error}` }, 500);
