@@ -26,28 +26,20 @@ export async function verifyMessage(
     return { isValid: false }
   }
 
-  // Verify the signature is valid before consuming the nonce
-  const verifiedMessage = await publicClient.verifySiweMessage({
-    domain,
-    message,
-    signature: signature as Hex,
-  })
+  // Juice perf by performing this operations in parallel
+  const [verifyResult, consumedNonce] = await Promise.all([
+    appClient.verifySignInMessage({
+      nonce: siweMessage.nonce,
+      domain,
+      message,
+      signature: signature as Hex,
+    }),
+    consumeNonce(env, siweMessage.nonce)
+  ])
 
-  if (!verifiedMessage) {
-    return { isValid: false }
-  }
-
-  const consumedNonce = await consumeNonce(env, siweMessage.nonce);
   if (!consumedNonce) {
-    return { isValid: false }
+    return { isValid: false, message: 'Invalid nonce' }
   }
-
-  const verifyResult = await appClient.verifySignInMessage({
-    nonce: siweMessage.nonce,
-    domain,
-    message,
-    signature: signature as Hex,
-  });
 
   if (verifyResult.isError) {
     return { isValid: false, message: verifyResult.error?.message }
