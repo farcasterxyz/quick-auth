@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { Nonce } from './durable-objects/nonce';
 import { generateNonce } from './nonce';
 import { verifyMessage } from './siwf';
@@ -7,6 +8,12 @@ import { createJWT, verifyJWT } from './jwt';
 export { Nonce };
 
 const app = new Hono<{ Bindings: Cloudflare.Env }>();
+
+app.use('*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
+  maxAge: 86400,
+}));
 
 app.get('/.well-known/jwks.json', async (c) => {
   try {
