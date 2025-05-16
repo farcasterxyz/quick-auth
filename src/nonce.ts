@@ -12,7 +12,7 @@ export async function generateNonce(env: Cloudflare.Env): Promise<string> {
   const nonceObject = env.NONCE.get(nonceId);
 
   // optimistically assume the nonce will get persisted
-  void nonceObject.initialize();
+  await nonceObject.initialize();
 
   return nonce;
 }
