@@ -14,12 +14,14 @@ export async function verifyMessage(
     transport: http(env.ETH_RPC_URL)
   })
 
-  const appClient = createAppClient({
-    relay: "https://relay.farcaster.xyz",
-    ethereum: viemConnector({ rpcUrl: env.ETH_RPC_URL }),
-  },
+  const appClient = createAppClient(
+    {
+      relay: "https://relay.farcaster.xyz",
+      ethereum: viemConnector({ rpcUrl: env.ETH_RPC_URL }),
+    },
     // @ts-expect-error 
-    publicClient);
+    publicClient
+  );
 
   const siweMessage = parseSiweMessage(message);
   if (!siweMessage.nonce) {

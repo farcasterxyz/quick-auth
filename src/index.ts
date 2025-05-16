@@ -67,7 +67,7 @@ app.post('/verify-siwf', async (c) => {
       return c.json({ valid: true, token });
     }
 
-    return c.json({ valid: false });
+    return c.json({ valid: false, message: verifyResult.message });
   } catch (error) {
     console.error('Error verifying message');
     return c.json({ error: `Failed to verify message: ${error}` }, 500);
