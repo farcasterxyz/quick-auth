@@ -37,7 +37,7 @@ Other servers can verify JWTs issued by this server by fetching the public key f
 
 - `POST /nonce`: Generates a nonce for SIWF
 - `POST /verify-siwf`: Verifies a SIWF message and issues a JWT
-- `POST /verify-token`: Verifies a JWT locally
+- `POST /verify-jwt`: Verifies a JWT locally
 - `GET /.well-known/jwks.json`: Returns the public key in JWKS format for JWT verification
 
 ## Development

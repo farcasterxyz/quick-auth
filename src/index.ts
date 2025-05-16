@@ -69,29 +69,38 @@ app.post('/verify-siwf', async (c) => {
 
     return c.json({ valid: true, token });
   } catch (error) {
-    console.error('Error verifying message');
-    return c.json({ error: `Failed to verify message: ${error}` }, 500);
+    console.error('error verifying message');
+    return c.json({ error: `failed to verify message: ${error}` }, 500);
   }
 });
 
-app.post('/verify-token', async (c) => {
+app.get('/verify-jwt', async (c) => {
   try {
-    const { token, domain } = await c.req.json<{ token: string; domain: string; }>();
-
+    const token = c.req.query('token')
     if (!token) {
-      return c.json({ error: 'Token is required' }, 400);
+      return c.json({
+        error: 'missing_param',
+        error_message: 'token query parameter is required'
+      }, 400);
     }
 
+    const domain = c.req.query('domain')
     if (!domain) {
-      return c.json({ error: 'Domain is required' }, 400);
+      return c.json({
+        error: 'missing_param',
+        error_message: 'domain query parameter is required'
+      }, 400);
     }
 
     const payload = await verifyJWT({ env: c.env, token, domain });
     if (payload) {
-      return c.json({ valid: true, payload });
+      return c.json(payload);
     }
 
-    return c.json({ valid: false });
+    return c.json({
+      error: 'invalid_token',
+      error_message: 'Token is not valid'
+    }, 400);
   } catch (error) {
     console.error('Error verifying JWT:', error);
     return c.json({ error: 'Failed to verify JWT' }, 500);
