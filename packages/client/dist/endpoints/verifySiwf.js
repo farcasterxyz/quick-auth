@@ -1,0 +1,6 @@
+import { z } from "zod/v4";
+export const requestBodySchema = z.object({
+    message: z.string(),
+    domain: z.string(),
+    signature: z.string(),
+});

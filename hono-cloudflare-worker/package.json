@@ -1,0 +1,22 @@
+{
+  "name": "auth-server",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "generateKeyPair": "ts-node scripts/generateKeyPair.ts -c scripts/tsconfig.json"
+  },
+  "dependencies": {
+    "@farcaster/auth-client": "^0.5.0",
+    "@farcaster/quick-auth": "workspace:*",
+    "hono": "^4.7.8",
+    "jose": "^5.2.3",
+    "viem": "^2.29.0",
+    "zod": "^3.25.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.15",
+    "ts-node": "^10.9.2",
+    "wrangler": "^4.14.4"
+  }
+}

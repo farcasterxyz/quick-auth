@@ -1,0 +1,29 @@
+{
+  "name": "@farcaster/auth-server-core",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "typescript": "5.8.3"
+  },
+  "devDependencies": {
+    "vitest": "^1.1.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "zod": "^3.25.1"
+  }
+}
+
