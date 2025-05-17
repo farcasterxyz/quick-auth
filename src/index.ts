@@ -41,7 +41,17 @@ app.post('/nonce', async (c) => {
 
 app.post('/verify-siwf', async (c) => {
   try {
-    const { message, domain, signature } = await c.req.json<{ message: string; domain: string; signature: string; }>();
+    const {
+      message,
+      domain,
+      signature,
+      acceptAuthAddress
+    } = await c.req.json<{
+      message: string;
+      domain: string;
+      signature: string;
+      acceptAuthAddress?: boolean;
+    }>();
 
     if (!message) {
       return c.json({ error: 'Message is required' }, 400);
@@ -55,7 +65,7 @@ app.post('/verify-siwf', async (c) => {
       return c.json({ error: 'Domain is required' }, 400);
     }
 
-    const verifyResult = await verifyMessage(c.env, { domain, message, signature });
+    const verifyResult = await verifyMessage(c.env, { domain, message, signature, acceptAuthAddress });
     if (!verifyResult.isValid) {
       return c.json({ valid: false, message: verifyResult.message });
     }
