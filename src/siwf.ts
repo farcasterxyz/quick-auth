@@ -7,8 +7,21 @@ import { createAppClient, viemConnector } from '@farcaster/auth-client';
 
 export async function verifyMessage(
   env: Cloudflare.Env,
-  { domain, message, signature }: { domain: string; message: string; signature: string; }
-): Promise<{ isValid: true; fid: number; address: string; } | { isValid: false; message?: string; }> {
+  {
+    domain,
+    message,
+    signature,
+    acceptAuthAddress
+  }: {
+    domain: string;
+    message: string;
+    signature: string;
+    acceptAuthAddress?: boolean;
+  }
+): Promise<
+  | { isValid: true; fid: number; address: string; }
+  | { isValid: false; message?: string; }
+> {
   const publicClient = createPublicClient({
     chain: optimism,
     transport: http(env.ETH_RPC_URL)
@@ -35,6 +48,7 @@ export async function verifyMessage(
       domain,
       message,
       signature: signature as Hex,
+      acceptAuthAddress,
     }),
     consumeNonce(env, siweMessage.nonce)
   ])
