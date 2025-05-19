@@ -1,20 +1,11 @@
 {
-  "name": "auth-server",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "23.x"
+  },
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "generateKeyPair": "ts-node scripts/generateKeyPair.ts -c scripts/tsconfig.json"
-  },
-  "dependencies": {
-    "@farcaster/auth-client": "^0.5.0",
-    "hono": "^4.7.8",
-    "jose": "^5.2.3",
-    "viem": "^2.29.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.15",
-    "ts-node": "^10.9.2",
-    "wrangler": "^4.14.4"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
   }
 }

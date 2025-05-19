@@ -1,0 +1,3 @@
+packages:
+  - 'hono-cloudflare-worker'
+  - 'quick-auth'
