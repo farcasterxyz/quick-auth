@@ -19,7 +19,7 @@ pnpm run deploy
 
 The following environment variables are required:
 
-- `ETH_RPC_URL`: Ethereum RPC url uesd to verify signatures and map addresses to FIDs
+- `ETH_RPC_URLS`: Comma separated list of Ethereum RPC urls uesd to verify signatures and map addresses to FIDs
 - `JWT_PRIVATE_KEY`: Private key in JWK format for signing JWTs
 - `JWT_PUBLIC_KEY`: Public key in JWK format for verifying JWTs
 

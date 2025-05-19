@@ -1,5 +1,4 @@
-import { createPublicClient, type Hex, http } from 'viem';
-import { optimism } from 'viem/chains';
+import type { Hex } from 'viem';
 import { parseSiweMessage, SiweMessage } from 'viem/siwe';
 import { consumeNonce } from './nonce';
 import { createAppClient, viemConnector } from '@farcaster/auth-client';
@@ -22,18 +21,11 @@ export async function verifyMessage(
   | { isValid: true; fid: number; address: string; }
   | { isValid: false; message?: string; }
 > {
-  const publicClient = createPublicClient({
-    chain: optimism,
-    transport: http(env.ETH_RPC_URL)
-  })
-
   const appClient = createAppClient(
     {
       relay: "https://relay.farcaster.xyz",
-      ethereum: viemConnector({ rpcUrl: env.ETH_RPC_URL }),
-    },
-    // @ts-expect-error 
-    publicClient
+      ethereum: viemConnector({ rpcUrls: env.ETH_RPC_URLS.split(',') }),
+    }
   );
 
   const siweMessage = parseSiweMessage(message);

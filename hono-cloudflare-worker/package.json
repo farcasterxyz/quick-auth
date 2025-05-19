@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@farcaster/auth-client": "^0.5.0",
+    "@farcaster/auth-client": "^0.6.0",
     "@farcaster/quick-auth": "workspace:*",
     "hono": "^4.7.8",
     "jose": "^5.2.3",

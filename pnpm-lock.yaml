@@ -11,8 +11,8 @@ importers:
   hono-cloudflare-worker:
     dependencies:
       '@farcaster/auth-client':
-        specifier: ^0.5.0
-        version: 0.5.0(typescript@5.8.3)(zod@3.25.1)
+        specifier: ^0.6.0
+        version: 0.6.0(typescript@5.8.3)(zod@3.25.1)
       '@farcaster/quick-auth':
         specifier: workspace:*
         version: link:../quick-auth
@@ -436,8 +436,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@farcaster/auth-client@0.5.0':
-    resolution: {integrity: sha512-94dyd8vcY/aLnQH28osSx+eLj0W4vuR7A9cn5693NtX8Wttvu3Vpo5s5MkKXDu8bh+eqimmsqUeTGJfEOocVGQ==}
+  '@farcaster/auth-client@0.6.0':
+    resolution: {integrity: sha512-YXTol6FHglYLXgpQg49ZG0262NzseFV2xf1gzrgvHh4iQqBY9pwSS2+hmW+N16H/tm/UgNg6JUTNAakFsjrJ2Q==}
 
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
@@ -1772,7 +1772,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.4':
     optional: true
 
-  '@farcaster/auth-client@0.5.0(typescript@5.8.3)(zod@3.25.1)':
+  '@farcaster/auth-client@0.6.0(typescript@5.8.3)(zod@3.25.1)':
     dependencies:
       neverthrow: 6.2.2
       viem: 2.29.4(typescript@5.8.3)(zod@3.25.1)
