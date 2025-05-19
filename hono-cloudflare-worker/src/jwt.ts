@@ -67,7 +67,7 @@ export async function verifyJWT({
     const { payload } = await jwtVerify<JWTPayload>(token, publicKey, {
       algorithms: ['RS256'],
       issuer: JWT_ISSUER,
-      audience: 'https://' + domain,
+      audience: domain,
       requiredClaims: ['sub', 'exp', 'iss', 'aud']
     });
 
