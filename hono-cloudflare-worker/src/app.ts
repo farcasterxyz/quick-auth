@@ -28,6 +28,16 @@ app.get('/.well-known/jwks.json', async (c) => {
   }
 });
 
+// Minimal openid-configuration endpoint to allow services like jwt.io to discover the jwks endpoint
+app.get('/.well-known/openid-configuration', async (c) => {
+  return c.json(
+    {
+      "issuer": c.env.HOST,
+      "jwks_uri": `${c.env.HOST}/.well-known/jwks.json`,
+    }
+  )
+});
+
 app.post('/nonce', async (c) => {
   try {
     const nonce = await generateNonce();
