@@ -1,6 +1,6 @@
-# Farcaster Auth Server Client
+# @farcaster/quick-auth
 
-A minimal TypeScript client for the Farcaster Auth Server.
+A client for interacting with a Farcaster Quick Auth server.
 
 ## Installation
 
@@ -15,7 +15,7 @@ pnpm add @auth-server/client
 ## Usage
 
 ```typescript
-import { createClient } from '@farcaster/auth-server-client';
+import { createClient } from '@farcaster/quick-auth';
 
 // Get a nonce
 const domain = 'your-domain.com';

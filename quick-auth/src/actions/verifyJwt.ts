@@ -1,11 +1,17 @@
 import { Config } from "../config.js";
 import { VerifyJwt } from "../endpoints/index.js";
-import { InvalidParametersError, InvalidTokenError, ResponseError } from "../errors.js";
+import { GlobalErrorType, InvalidParametersError, InvalidTokenError, ResponseError } from "../errors.js";
 
 export declare namespace verifyJwt {
   type Options = VerifyJwt.RequestQueryParameters;
   type ReturnValue = VerifyJwt.ResponseBody;
   type ReturnType = Promise<ReturnValue>;
+
+  type ErrorType =
+    | InvalidTokenError
+    | InvalidParametersError
+    | ResponseError
+    | GlobalErrorType;
 }
 
 export async function verifyJwt({ origin }: Config, options: verifyJwt.Options): verifyJwt.ReturnType {

@@ -1,11 +1,16 @@
 import { Config } from "../config.js";
 import { VerifySiwf } from "../endpoints/index.js";
-import { InvalidSiwfError, ResponseError } from "../errors.js";
+import { GlobalErrorType, InvalidSiwfError, ResponseError } from "../errors.js";
 
 export declare namespace verifySiwf {
   type Options = VerifySiwf.RequestBody;
   type ReturnValue = { token: string };
   type ReturnType = Promise<ReturnValue>;
+
+  type ErrorType =
+    | InvalidSiwfError
+    | ResponseError
+    | GlobalErrorType
 }
 
 export async function verifySiwf({ origin }: Config, options: verifySiwf.Options): verifySiwf.ReturnType {

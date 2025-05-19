@@ -1,10 +1,14 @@
 import { Config } from "../config.js";
 import { Nonce } from "../endpoints/index.js";
-import { ResponseError } from "../errors.js";
+import { GlobalErrorType, ResponseError } from "../errors.js";
 
 export declare namespace generateNonce {
   type ReturnValue = Nonce.ResponseBody;
   type ReturnType = Promise<ReturnValue>;
+
+  type ErrorType =
+    | ResponseError
+    | GlobalErrorType;
 }
 
 export async function generateNonce({ origin }: Config): generateNonce.ReturnType {
