@@ -25,6 +25,7 @@
     "vitest": "^1.1.0"
   },
   "dependencies": {
+    "jose": "^5.2.3",
     "zod": "^3.25.1"
   },
   "files": [
