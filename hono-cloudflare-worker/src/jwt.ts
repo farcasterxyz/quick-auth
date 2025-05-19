@@ -19,7 +19,7 @@ export async function createJWT({
   fid,
   address,
   domain
-  }: {
+}: {
   env: Cloudflare.Env;
   fid: number;
   address: string;
@@ -28,19 +28,19 @@ export async function createJWT({
   const payload = {
     address,
   } satisfies JWTPayload;
-  
+
   // Load the private key from environment
-  const { privateKey } = await loadKeys(env);
-  
+  const { privateKey, kid } = await loadKeys(env);
+
   const jwt = await new SignJWT(payload)
-    .setProtectedHeader({ alg: 'RS256' })
+    .setProtectedHeader({ alg: 'RS256', kid })
     .setIssuedAt()
     .setIssuer(JWT_ISSUER)
     .setExpirationTime(JWT_EXPIRATION)
     .setSubject(fid.toString())
     .setAudience(`https://` + domain)
     .sign(privateKey);
-  
+
   return jwt;
 }
 
@@ -51,19 +51,19 @@ export async function createJWT({
  * @param domain The domain for audience validation
  * @returns The payload if valid, null if invalid
  */
-export async function verifyJWT({ 
-  env, 
-  token, 
-  domain 
-}: { 
-  env: Cloudflare.Env; 
-  token: string; 
-  domain: string; 
+export async function verifyJWT({
+  env,
+  token,
+  domain
+}: {
+  env: Cloudflare.Env;
+  token: string;
+  domain: string;
 }): Promise<JWTPayload | null> {
   try {
     // Load the public key from environment
     const { publicKey } = await loadKeys(env);
-    
+
     const { payload } = await jwtVerify<JWTPayload>(token, publicKey, {
       algorithms: ['RS256'],
       issuer: JWT_ISSUER,
