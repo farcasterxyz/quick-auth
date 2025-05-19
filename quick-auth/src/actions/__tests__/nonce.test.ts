@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { generateNonce } from '../nonce.js';
 import { Config } from '../../config.js';
+import { ResponseError } from '../../errors.js';
 
 describe('generateNonce', () => {
   const mockConfig: Config = { origin: 'https://test.example.com' };
@@ -36,12 +37,19 @@ describe('generateNonce', () => {
     expect(result).toEqual(mockNonce);
   });
 
-  it('should throw an error when request fails', async () => {
+  it('should throw a ResponseError when request fails', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: false,
       status: 500,
     });
 
-    await expect(generateNonce(mockConfig)).rejects.toThrow('Request failed (status 500)');
+    try {
+      await generateNonce(mockConfig);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResponseError);
+      expect((error as Error).message).toContain('Request failed with status 500');
+    }
   });
 });

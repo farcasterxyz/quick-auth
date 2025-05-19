@@ -1,5 +1,6 @@
 import { Config } from "../config.js";
 import { VerifySiwf } from "../endpoints/index.js";
+import { InvalidSiwfError, ResponseError } from "../errors.js";
 
 export declare namespace verifySiwf {
   type Options = VerifySiwf.RequestBody;
@@ -15,13 +16,12 @@ export async function verifySiwf({ origin }: Config, options: verifySiwf.Options
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to get nonce');
+    throw new ResponseError({ status: response.status })
   }
 
   const data = await response.json() as VerifySiwf.ResponseBody;
   if (data.valid === false) {
-    throw new Error("Invalid: " + (data.message ?? 'unknown'));
+    throw new InvalidSiwfError(data.message ?? 'unknown');
   }
 
   return { token: data.token };

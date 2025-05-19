@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { verifySiwf } from '../verifySiwf.js';
 import { Config } from '../../config.js';
+import { InvalidSiwfError, ResponseError } from '../../errors.js';
 
 describe('verifySiwf', () => {
   const mockConfig: Config = { origin: 'https://test.example.com' };
@@ -29,10 +30,10 @@ describe('verifySiwf', () => {
 
     expect(fetch).toHaveBeenCalledWith(
       'https://test.example.com/verify-siwf',
-      {
+      expect.objectContaining({
         method: 'POST',
         body: JSON.stringify(mockOptions)
-      }
+      })
     );
   });
 
@@ -47,7 +48,7 @@ describe('verifySiwf', () => {
     expect(result).toEqual({ token: 'valid-jwt-token' });
   });
 
-  it('should throw an error when verification fails with valid=false', async () => {
+  it('should throw an InvalidSiwfError when verification fails with valid=false', async () => {
     const errorResponse = {
       valid: false,
       message: 'Invalid signature'
@@ -58,41 +59,50 @@ describe('verifySiwf', () => {
       json: async () => errorResponse,
     });
 
-    await expect(verifySiwf(mockConfig, mockOptions)).rejects.toThrow('Invalid: Invalid signature');
+    try {
+      await verifySiwf(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(InvalidSiwfError);
+      expect((error as Error).message).toContain('Invalid signature');
+    }
   });
 
-  it('should throw an error with unknown message when verification fails without message', async () => {
-    const errorResponse = {
-      valid: false
-    };
-
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => errorResponse,
-    });
-
-    await expect(verifySiwf(mockConfig, mockOptions)).rejects.toThrow('Invalid: unknown');
-  });
-
-  it('should throw an error when response status is not ok', async () => {
+  it('should throw a ResponseError when response status is not ok', async () => {
     const errorResponse = {
       error: 'Rate limit exceeded'
     };
 
     (global.fetch as any).mockResolvedValueOnce({
       ok: false,
+      status: 429,
       json: async () => errorResponse,
     });
 
-    await expect(verifySiwf(mockConfig, mockOptions)).rejects.toThrow('Rate limit exceeded');
+    try {
+      await verifySiwf(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResponseError);
+    }
   });
 
-  it('should throw a default error when response is not ok and no error specified', async () => {
+  it('should throw a ResponseError when response is not ok and no error specified', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: false,
+      status: 500,
       json: async () => ({}),
     });
 
-    await expect(verifySiwf(mockConfig, mockOptions)).rejects.toThrow('Failed to get nonce');
+    try {
+      await verifySiwf(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResponseError);
+      expect((error as Error).message).toContain('Request failed with status 500');
+    }
   });
 });

@@ -12,7 +12,7 @@ export declare namespace createConfig {
   type Options = Partial<Config>;
 }
 
-export function createConfig(options: createConfig.Options) {
+export function createConfig(options: createConfig.Options = {}) {
   return {
     origin: options.origin ?? 'https://auth.farcaster.xyz'
   }

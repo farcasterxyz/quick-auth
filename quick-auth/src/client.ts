@@ -12,7 +12,7 @@ export declare namespace createClient {
   type ReturnType = Client;
 }
 
-export function createClient(options: createClient.Options): createClient.ReturnType {
+export function createClient(options: createClient.Options = {}): createClient.ReturnType {
   const config = createConfig(options);
 
   return {

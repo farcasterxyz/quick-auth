@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { verifyJwt } from '../verifyJwt.js';
 import { Config } from '../../config.js';
+import { InvalidParametersError, InvalidTokenError, ResponseError } from '../../errors.js';
 
 describe('verifyJwt', () => {
   const mockConfig: Config = { origin: 'https://test.example.com' };
@@ -44,7 +45,7 @@ describe('verifyJwt', () => {
     expect(result).toEqual(mockSuccessResponse);
   });
 
-  it('should throw an error when token is invalid', async () => {
+  it('should throw an InvalidTokenError when token is invalid', async () => {
     const errorResponse = {
       error: 'invalid_token',
       error_message: 'Token has expired'
@@ -55,10 +56,17 @@ describe('verifyJwt', () => {
       json: async () => errorResponse,
     });
 
-    await expect(verifyJwt(mockConfig, mockOptions)).rejects.toThrow('Invalid token: Token has expired');
+    try {
+      await verifyJwt(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(InvalidTokenError);
+      expect((error as Error).message).toContain('Token has expired');
+    }
   });
 
-  it('should throw an error when params are invalid', async () => {
+  it('should throw an InvalidParametersError when params are invalid', async () => {
     const errorResponse = {
       error: 'invalid_params',
       error_message: 'Missing domain parameter'
@@ -69,10 +77,17 @@ describe('verifyJwt', () => {
       json: async () => errorResponse,
     });
 
-    await expect(verifyJwt(mockConfig, mockOptions)).rejects.toThrow('Invalid params: Missing domain parameter');
+    try {
+      await verifyJwt(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(InvalidParametersError);
+      expect((error as Error).message).toContain('Missing domain parameter');
+    }
   });
 
-  it('should throw a generic bad request error for other 400 errors', async () => {
+  it('should throw a ResponseError for other 400 errors', async () => {
     const errorResponse = {
       error: 'unknown_error',
       error_message: 'Something went wrong'
@@ -83,15 +98,28 @@ describe('verifyJwt', () => {
       json: async () => errorResponse,
     });
 
-    await expect(verifyJwt(mockConfig, mockOptions)).rejects.toThrow('Bad request');
+    try {
+      await verifyJwt(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResponseError);
+    }
   });
 
-  it('should throw an error for non-200/400 status codes', async () => {
+  it('should throw a ResponseError for non-200/400 status codes', async () => {
     (global.fetch as any).mockResolvedValueOnce({
       status: 500,
       json: async () => ({}),
     });
 
-    await expect(verifyJwt(mockConfig, mockOptions)).rejects.toThrow('Request failed (status 500)');
+    try {
+      await verifyJwt(mockConfig, mockOptions);
+      // Should not reach here
+      expect(true).toBe(false);
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResponseError);
+      expect((error as Error).message).toContain('Request failed with status 500');
+    }
   });
 });

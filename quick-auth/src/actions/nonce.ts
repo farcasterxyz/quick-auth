@@ -1,5 +1,6 @@
 import { Config } from "../config.js";
 import { Nonce } from "../endpoints/index.js";
+import { ResponseError } from "../errors.js";
 
 export declare namespace generateNonce {
   type ReturnValue = Nonce.ResponseBody;
@@ -12,7 +13,7 @@ export async function generateNonce({ origin }: Config): generateNonce.ReturnTyp
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed (status ${response.status})`);
+    throw new ResponseError({ status: response.status });
   }
 
   return await response.json() as Nonce.ResponseBody;
