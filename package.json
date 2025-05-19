@@ -3,5 +3,9 @@
   "type": "module",
   "engines": {
     "node": "23.x"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
   }
 }

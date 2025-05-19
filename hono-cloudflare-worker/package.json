@@ -7,7 +7,7 @@
     "generateKeyPair": "ts-node scripts/generateKeyPair.ts -c scripts/tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@farcaster/auth-client": "^0.5.0",
