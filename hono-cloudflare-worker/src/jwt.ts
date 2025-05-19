@@ -38,7 +38,7 @@ export async function createJWT({
     .setIssuer(JWT_ISSUER)
     .setExpirationTime(JWT_EXPIRATION)
     .setSubject(fid.toString())
-    .setAudience(`https://` + domain)
+    .setAudience(domain)
     .sign(privateKey);
 
   return jwt;
