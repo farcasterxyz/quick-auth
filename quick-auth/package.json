@@ -2,6 +2,11 @@
   "name": "@farcaster/quick-auth",
   "version": "0.0.1",
   "description": "Client for Farcaster Quick Auth",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farcasterxyz/quick-auth.git",
+    "directory": "quick-auth"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
