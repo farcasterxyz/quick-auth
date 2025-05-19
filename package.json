@@ -5,6 +5,7 @@
     "node": "23.x"
   },
   "scripts": {
+    "build": "pnpm --filter 'quick-auth' build",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test"
   }
