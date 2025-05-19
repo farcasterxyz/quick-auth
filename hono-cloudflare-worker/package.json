@@ -1,5 +1,6 @@
 {
   "name": "auth-server",
+  "private": true,
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
