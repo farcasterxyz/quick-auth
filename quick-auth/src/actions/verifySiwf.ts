@@ -4,7 +4,14 @@ import { GlobalErrorType, InvalidSiwfError, ResponseError } from "../errors.js";
 
 export declare namespace verifySiwf {
   type Options = VerifySiwf.RequestBody;
-  type ReturnValue = { token: string };
+  type ReturnValue = {
+    /**
+     * JWT issued by the Quick Auth server. Verify it on your backend with
+     * `verifyJwt`. If you want to inspect the contents without verifying it
+     * you can use `decodeJwt`.
+     */
+    token: string
+  };
   type ReturnType = Promise<ReturnValue>;
 
   type ErrorType =

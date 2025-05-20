@@ -13,6 +13,9 @@ export declare namespace createLightClient {
 
 /**
  * For use on frontends where JWT verification is not necessary.
+ *
+ * This function is exported (as a named export) from the main `'quick-auth'` module
+ * entry point as well as from its subpath export `'quick-auth/light'`.
  */
 export function createLightClient(options: createLightClient.Options = {}): createLightClient.ReturnType {
   const config = createConfig(options);
