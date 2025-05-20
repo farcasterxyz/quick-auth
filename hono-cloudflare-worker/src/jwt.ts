@@ -1,40 +1,9 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { loadKeys } from './jwks';
+import { JWTPayload } from '@farcaster/quick-auth';
 
 const JWT_ISSUER = 'https://auth.farcaster.xyz';
 const JWT_EXPIRATION = '1h';
-
-export interface JWTPayload {
-  /**
-   * The address the user signed in with.
-   */
-  address: string;
-
-  /**
-   * The user's Farcaster ID.
-   */
-  sub: number;
-
-  /**
-   * The Farcaster Quick Auth server that issued this token.
-   */
-  iss: string
-
-  /**
-   * The domain this token was issued to.
-   */
-  aud: string;
-
-  /**
-   * The JWT expiration time.
-   */
-  exp: number
-
-  /**
-   * The JWT issued at time.
-   */
-  iat: number
-}
 
 /**
  * Creates a JWT 

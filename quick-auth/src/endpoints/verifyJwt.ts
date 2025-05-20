@@ -1,3 +1,4 @@
+import { JWTPayload } from "jose";
 import { z } from "zod";
 
 export type RequestQueryParameters = {
@@ -5,38 +6,7 @@ export type RequestQueryParameters = {
   domain: string;
 }
 
-
-export type ResponseBody = {
-  /**
-   * The address the user signed in with.
-   */
-  address: string;
-
-  /**
-   * The user's Farcaster ID.
-   */
-  sub: number;
-
-  /**
-   * The Farcaster Quick Auth server that issued this token.
-   */
-  iss: string
-
-  /**
-   * The domain this token was issued to.
-   */
-  aud: string;
-
-  /**
-   * The JWT expiration time.
-   */
-  exp: number
-
-  /**
-   * The JWT issued at time.
-   */
-  iat: number
-}
+export type ResponseBody = JWTPayload;
 
 export type BadRequestResponseBody = {
   error: 'invalid_token' | 'invalid_params'
