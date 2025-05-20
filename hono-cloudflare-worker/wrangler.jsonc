@@ -16,5 +16,10 @@
         "class_name": "Nonce"
       }
     ]
-  }
+  },
+  "analytics_engine_datasets": [
+    {
+      "binding": "VERIFY_SIWF_REQS"
+    }
+  ]
 }

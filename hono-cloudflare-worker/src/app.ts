@@ -64,6 +64,13 @@ app.post('/verify-siwf',
   async (c) => {
     try {
       const { message, domain, signature, acceptAuthAddress } = c.req.valid('json');
+
+      c.env.VERIFY_SIWF_REQS.writeDataPoint({
+        'blobs': [domain],
+        'doubles': [1],
+        'indexes': [domain]
+      });
+
       const verifyResult = await verifyMessage(c.env, { domain, message, signature, acceptAuthAddress });
       if (!verifyResult.isValid) {
         return c.json({ valid: false, message: verifyResult.message });
