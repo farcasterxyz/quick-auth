@@ -5,7 +5,35 @@ const JWT_ISSUER = 'https://auth.farcaster.xyz';
 const JWT_EXPIRATION = '1h';
 
 export interface JWTPayload {
+  /**
+   * The address the user signed in with.
+   */
   address: string;
+
+  /**
+   * The user's Farcaster ID.
+   */
+  sub: number;
+
+  /**
+   * The Farcaster Quick Auth server that issued this token.
+   */
+  iss: string
+
+  /**
+   * The domain this token was issued to.
+   */
+  aud: string;
+
+  /**
+   * The JWT expiration time.
+   */
+  exp: number
+
+  /**
+   * The JWT issued at time.
+   */
+  iat: number
 }
 
 /**
@@ -27,7 +55,7 @@ export async function createJWT({
 }): Promise<string> {
   const payload = {
     address,
-  } satisfies JWTPayload;
+  };
 
   // Load the private key from environment
   const { privateKey, kid } = await loadKeys(env);
@@ -37,7 +65,8 @@ export async function createJWT({
     .setIssuedAt()
     .setIssuer(JWT_ISSUER)
     .setExpirationTime(JWT_EXPIRATION)
-    .setSubject(fid.toString())
+    // @ts-expect-error - we want a numeric aud value
+    .setSubject(fid)
     .setAudience(domain)
     .sign(privateKey);
 

@@ -27,12 +27,12 @@ export async function verifyJwtWithJwks({ origin }: Config, options: verifyJwtWi
   const JWKS = getJwksSet(`${origin}/.well-known/jwks.json`)
 
   try {
-    const { payload } = await jwtVerify(options.token, JWKS, {
+    const { payload } = await jwtVerify<VerifyJwt.ResponseBody>(options.token, JWKS, {
       issuer: origin,
       audience: options.domain,
     })
 
-    return payload as VerifyJwt.ResponseBody;
+    return payload;
   } catch (error) {
     if (
       error instanceof errors.JWTInvalid
