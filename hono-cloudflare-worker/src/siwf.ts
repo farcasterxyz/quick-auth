@@ -37,7 +37,7 @@ export async function verifyMessage(
   const [verifyResult, consumedNonce] = await Promise.all([
     (async (nonce) => {
       const verifyStart = Date.now();
-      const verifyResult = appClient.verifySignInMessage({
+      const verifyResult = await appClient.verifySignInMessage({
         nonce,
         domain,
         message,
@@ -49,7 +49,7 @@ export async function verifyMessage(
     })(siweMessage.nonce),
     (async (nonce) => {
       const consumeStart = Date.now();
-      const nonceResult = consumeNonce(env, nonce)
+      const nonceResult = await consumeNonce(env, nonce)
       console.log({ action: 'consumeNonce', duration: Date.now() - consumeStart });
 
       return nonceResult;

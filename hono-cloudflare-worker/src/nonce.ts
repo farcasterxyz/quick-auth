@@ -14,9 +14,7 @@ export async function storeNonce(env: Cloudflare.Env, nonce: string): Promise<vo
   const nonceId = env.NONCE.idFromName(nonce);
   const nonceObject = env.NONCE.get(nonceId);
 
-  // optimistically assume the nonce will get persisted
   await nonceObject.initialize();
-
 }
 
 export async function consumeNonce(env: Cloudflare.Env, nonce: string): Promise<boolean> {
