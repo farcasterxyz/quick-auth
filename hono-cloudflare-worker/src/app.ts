@@ -71,10 +71,12 @@ app.post('/verify-siwf',
         'indexes': [domain]
       });
 
+      const verifyStart = Date.now();
       const verifyResult = await verifyMessage(c.env, { domain, message, signature, acceptAuthAddress });
       if (!verifyResult.isValid) {
         return c.json({ valid: false, message: verifyResult.message });
       }
+      console.log(`verifyMessage ${Date.now() - verifyStart}`);
 
       const token = await createJWT({
         env: c.env,

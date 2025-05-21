@@ -35,14 +35,25 @@ export async function verifyMessage(
 
   // Juice perf by performing this operations in parallel
   const [verifyResult, consumedNonce] = await Promise.all([
-    appClient.verifySignInMessage({
-      nonce: siweMessage.nonce,
-      domain,
-      message,
-      signature: signature as Hex,
-      acceptAuthAddress,
-    }),
-    consumeNonce(env, siweMessage.nonce)
+    (async (nonce) => {
+      const verifyStart = Date.now();
+      const verifyResult = appClient.verifySignInMessage({
+        nonce,
+        domain,
+        message,
+        signature: signature as Hex,
+        acceptAuthAddress,
+      })
+      console.log(`verifySignInMessage ${Date.now() - verifyStart}`);
+      return verifyResult;
+    })(siweMessage.nonce),
+    (async (nonce) => {
+      const consumeStart = Date.now();
+      const nonceResult = consumeNonce(env, nonce)
+      console.log(`consumeNonce ${Date.now() - consumeStart}`);
+
+      return nonceResult;
+    })(siweMessage.nonce)
   ])
 
   if (!consumedNonce) {
