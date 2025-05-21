@@ -6,7 +6,6 @@ export class Nonce extends DurableObject<Cloudflare.Env> {
   }
 
   async initialize(): Promise<boolean> {
-    this.initialized
     const expiresAt = Date.now() + 5 * 60 * 1000; // 5m from now
 
     await this.ctx.storage.put<number>('expiresAt', expiresAt);
@@ -23,8 +22,7 @@ export class Nonce extends DurableObject<Cloudflare.Env> {
       return false;
     }
 
-    await this.cleanup();
-
+    await this.ctx.storage.delete('expiresAt');
     return true;
   }
 
