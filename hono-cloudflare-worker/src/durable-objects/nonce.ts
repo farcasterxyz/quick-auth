@@ -6,17 +6,14 @@ export class Nonce extends DurableObject<Cloudflare.Env> {
   }
 
   async initialize(): Promise<boolean> {
-    try {
-      const expiresAt = Date.now() + 5 * 60 * 1000; // 5m from now
+    this.initialized
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5m from now
 
-      await this.ctx.storage.put<number>('expiresAt', expiresAt);
+    await this.ctx.storage.put<number>('expiresAt', expiresAt);
 
-      this.ctx.storage.setAlarm(expiresAt);
+    this.ctx.storage.setAlarm(expiresAt);
 
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return true;
   }
 
   // Consume the nonce if it's valid
