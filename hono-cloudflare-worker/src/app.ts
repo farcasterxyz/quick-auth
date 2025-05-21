@@ -41,7 +41,7 @@ app.get('/.well-known/openid-configuration', async (c) => {
 app.post('/nonce', async (c) => {
   try {
     const nonce = await generateNonce();
-    c.executionCtx.waitUntil(storeNonce(c.env, nonce));
+    await storeNonce(c.env, nonce)
     return c.json({ nonce });
   } catch (error) {
     console.error('Error generating nonce:', error);
@@ -73,10 +73,13 @@ app.post('/verify-siwf',
 
       const verifyStart = Date.now();
       const verifyResult = await verifyMessage(c.env, { domain, message, signature, acceptAuthAddress });
-      if (!verifyResult.isValid) {
-        return c.json({ valid: false, message: verifyResult.message });
-      }
       console.log(`verifyMessage ${Date.now() - verifyStart}`);
+      if (!verifyResult.isValid) {
+        return c.json({
+          error: 'invalid_nonce',
+        }, 400);
+        // return c.json({ valid: false, message: verifyResult.message });
+      }
 
       const token = await createJWT({
         env: c.env,
