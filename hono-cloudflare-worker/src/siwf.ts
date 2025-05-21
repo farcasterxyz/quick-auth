@@ -44,13 +44,13 @@ export async function verifyMessage(
         signature: signature as Hex,
         acceptAuthAddress,
       })
-      console.log(`verifySignInMessage ${Date.now() - verifyStart}`);
+      console.log({ action: 'verifySignInMessage', duration: Date.now() - verifyStart });
       return verifyResult;
     })(siweMessage.nonce),
     (async (nonce) => {
       const consumeStart = Date.now();
       const nonceResult = consumeNonce(env, nonce)
-      console.log(`consumeNonce ${Date.now() - consumeStart}`);
+      console.log({ action: 'consumeNonce', duration: Date.now() - consumeStart });
 
       return nonceResult;
     })(siweMessage.nonce)
