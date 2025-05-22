@@ -10,6 +10,10 @@
     {
       "tag": "v1",
       "new_sqlite_classes": ["Nonce"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["NoncePool"]
     }
   ],
  "observability": {
@@ -21,6 +25,10 @@
       {
         "name": "NONCE",
         "class_name": "Nonce"
+      },
+      {
+        "name": "NONCE_POOL",
+        "class_name": "NoncePool"
       }
     ]
   },

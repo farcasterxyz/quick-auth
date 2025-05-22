@@ -19,7 +19,7 @@ export async function verifyMessage(
   }
 ): Promise<
   | { isValid: true; fid: number; address: string; }
-  | { isValid: false; message?: string; }
+  | { isValid: false; reason: string; message?: string; }
 > {
   const appClient = createAppClient(
     {
@@ -30,7 +30,7 @@ export async function verifyMessage(
 
   const siweMessage = parseSiweMessage(message);
   if (!siweMessage.nonce) {
-    return { isValid: false }
+    return { isValid: false, reason: 'invalid_nonce' }
   }
 
   // Juice perf by performing this operations in parallel
@@ -57,11 +57,11 @@ export async function verifyMessage(
   ])
 
   if (!consumedNonce) {
-    return { isValid: false, message: 'Invalid nonce' }
+    return { isValid: false, reason: 'invalid_nonce', message: 'Invalid nonce' }
   }
 
   if (verifyResult.isError) {
-    return { isValid: false, message: verifyResult.error?.message }
+    return { isValid: false, reason: 'invalid_signature', message: verifyResult.error?.message }
   }
 
   return { isValid: true, fid: verifyResult.fid, address: (siweMessage as SiweMessage).address }
