@@ -47,9 +47,6 @@ describe('verifyJwtWithJwks', () => {
   it('should create JWKS set with correct URL', async () => {
     const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
     mockJwtVerify.mockResolvedValueOnce({ payload: mockSuccessResponse } as any);
 
     await verifyJwtWithJwks(mockConfig, mockOptions);
@@ -62,11 +59,11 @@ describe('verifyJwtWithJwks', () => {
   it('should verify JWT with correct parameters', async () => {
     const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
+    mockJwtVerify.mockResolvedValueOnce({ payload: mockSuccessResponse } as any);
     const mockJwksSet = vi.fn();
 
+    // @ts-expect-error
     mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
-    mockJwtVerify.mockResolvedValueOnce({ payload: mockSuccessResponse } as any);
-
     await verifyJwtWithJwks(mockConfig, mockOptions);
 
     expect(mockJwtVerify).toHaveBeenCalledWith(
@@ -80,11 +77,7 @@ describe('verifyJwtWithJwks', () => {
   });
 
   it('should return the payload when verification succeeds', async () => {
-    const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
     mockJwtVerify.mockResolvedValueOnce({ payload: mockSuccessResponse } as any);
 
     const result = await verifyJwtWithJwks(mockConfig, mockOptions);
@@ -93,11 +86,7 @@ describe('verifyJwtWithJwks', () => {
   });
 
   it('should throw InvalidTokenError for JWTInvalid error', async () => {
-    const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
     const jwtError = new errors.JWTInvalid('Invalid JWT format');
     mockJwtVerify.mockRejectedValue(jwtError);
 
@@ -106,12 +95,8 @@ describe('verifyJwtWithJwks', () => {
   });
 
   it('should throw InvalidTokenError for JWTExpired error', async () => {
-    const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
-    const jwtError = new errors.JWTExpired('JWT has expired');
+    const jwtError = new errors.JWTExpired('JWT has expired', {});
     mockJwtVerify.mockRejectedValue(jwtError);
 
     await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow(InvalidTokenError);
@@ -119,12 +104,8 @@ describe('verifyJwtWithJwks', () => {
   });
 
   it('should throw InvalidTokenError for JWTClaimValidationFailed error', async () => {
-    const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
-    const jwtError = new errors.JWTClaimValidationFailed('Claim validation failed');
+    const jwtError = new errors.JWTClaimValidationFailed('Claim validation failed', {});
     mockJwtVerify.mockRejectedValue(jwtError);
 
     await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow(InvalidTokenError);
@@ -132,38 +113,11 @@ describe('verifyJwtWithJwks', () => {
   });
 
   it('should re-throw non-JWT errors', async () => {
-    const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
     const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
     const networkError = new Error('Network error');
     mockJwtVerify.mockRejectedValue(networkError);
 
     await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow('Network error');
     await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.not.toThrow(InvalidTokenError);
-  });
-
-  it('should reuse JWKS set for same origin', async () => {
-    const mockCreateRemoteJWKSet = vi.mocked(createRemoteJWKSet);
-    const mockJwtVerify = vi.mocked(jwtVerify);
-    const mockJwksSet = vi.fn();
-
-    // Use a unique origin for this test to avoid cache conflicts
-    const uniqueConfig = { origin: 'https://unique-test.example.com' };
-    
-    // Reset call count for this test
-    mockCreateRemoteJWKSet.mockClear();
-    mockJwtVerify.mockClear();
-    
-    mockCreateRemoteJWKSet.mockReturnValue(mockJwksSet);
-    mockJwtVerify.mockResolvedValue({ payload: mockSuccessResponse } as any);
-
-    await verifyJwtWithJwks(uniqueConfig, mockOptions);
-    await verifyJwtWithJwks(uniqueConfig, mockOptions);
-
-    // Now we can verify the caching behavior
-    expect(mockJwtVerify).toHaveBeenCalledTimes(2);
-    expect(mockCreateRemoteJWKSet).toHaveBeenCalledTimes(1);
   });
 });

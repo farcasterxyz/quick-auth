@@ -1,12 +1,12 @@
-import { JWTPayload } from "jose";
 import { z } from "zod";
+import { JWTPayload } from "../types.js";
 
 export type RequestQueryParameters = {
   token: string;
   domain: string;
 }
 
-export type ResponseBody = JWTPayload & { sub: number };
+export type ResponseBody = JWTPayload;
 
 export type BadRequestResponseBody = {
   error: 'invalid_token' | 'invalid_params'
