@@ -14,22 +14,16 @@ const JWT_EXPIRATION = '1h';
 export async function createJWT({
   env,
   fid,
-  address,
   domain
 }: {
   env: Cloudflare.Env;
   fid: number;
-  address: string;
   domain: string;
 }): Promise<string> {
-  const payload = {
-    address,
-  };
-
   // Load the private key from environment
   const { privateKey, kid } = await loadKeys(env);
 
-  const jwt = await new SignJWT(payload)
+  const jwt = await new SignJWT()
     .setProtectedHeader({ alg: 'RS256', kid })
     .setIssuedAt()
     .setIssuer(JWT_ISSUER)

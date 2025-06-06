@@ -73,7 +73,6 @@ app.post('/verify-siwf', async (c) => {
     const token = await createJWT({
       env: c.env,
       fid: verifyResult.fid,
-      address: verifyResult.address,
       domain
     });
 

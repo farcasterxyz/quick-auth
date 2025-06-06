@@ -6,7 +6,7 @@ export type RequestQueryParameters = {
   domain: string;
 }
 
-export type ResponseBody = JWTPayload;
+export type ResponseBody = JWTPayload & { sub: number };
 
 export type BadRequestResponseBody = {
   error: 'invalid_token' | 'invalid_params'

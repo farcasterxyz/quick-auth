@@ -1,10 +1,5 @@
 export type JWTPayload = {
   /**
-   * The address the user signed in with.
-   */
-  address: string;
-
-  /**
    * The user's Farcaster ID.
    */
   sub: number;

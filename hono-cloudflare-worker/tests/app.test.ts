@@ -1,35 +1,36 @@
 import { createExecutionContext, env } from 'cloudflare:test'
 import { describe, expect, beforeEach, vi, test } from 'vitest';
 import { createTestContext } from './test-utils';
+
+// Mock dependencies before importing the app
+vi.mock('../src/nonce', () => ({
+  generateNonce: vi.fn().mockResolvedValue('mock-nonce-123'),
+  storeNonce: vi.fn().mockResolvedValue(true),
+  consumeNonce: vi.fn().mockResolvedValue(true)
+}));
+
+vi.mock('../src/siwf', () => ({
+  verifyMessage: vi.fn().mockResolvedValue({
+    isValid: true,
+    fid: 12345,
+    address: '0x1234567890abcdef1234567890abcdef12345678'
+  })
+}));
+
+vi.mock('../src/jwt', () => ({
+  createJWT: vi.fn().mockResolvedValue('mock-jwt-token'),
+  verifyJWT: vi.fn().mockResolvedValue({
+    address: '0x1234567890abcdef1234567890abcdef12345678',
+    sub: '12345'
+  })
+}));
+
 import { app } from '../src/app';
 
 let context: ReturnType<typeof createTestContext>;
 
 beforeEach(() => {
   context = createTestContext();
-
-  // Mock any external services or dependencies
-  vi.mock('../src/nonce', () => ({
-    generateNonce: vi.fn().mockResolvedValue('mock-nonce-123'),
-    storeNonce: vi.fn().mockResolvedValue(true),
-    consumeNonce: vi.fn().mockResolvedValue(true)
-  }));
-
-  vi.mock('../src/siwf', () => ({
-    verifyMessage: vi.fn().mockResolvedValue({
-      isValid: true,
-      fid: 12345,
-      address: '0x1234567890abcdef1234567890abcdef12345678'
-    })
-  }));
-
-  vi.mock('../src/jwt', () => ({
-    createJWT: vi.fn().mockResolvedValue('mock-jwt-token'),
-    verifyJWT: vi.fn().mockResolvedValue({
-      address: '0x1234567890abcdef1234567890abcdef12345678',
-      sub: '12345'
-    })
-  }));
 });
 
 describe('POST /verify-siwf', () => {
