@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/quick-auth",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Client for Farcaster Quick Auth",
   "repository": {
     "type": "git",
@@ -8,25 +8,46 @@
     "directory": "quick-auth"
   },
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     },
     "./light": {
-      "types": "./dist/lightClient.d.ts",
-      "default": "./dist/lightClient.js"
+      "import": {
+        "types": "./dist/esm/lightClient.d.ts",
+        "default": "./dist/esm/lightClient.js"
+      },
+      "require": {
+        "types": "./dist/cjs/lightClient.d.ts",
+        "default": "./dist/cjs/lightClient.js"
+      }
     },
     "./decodeJwt": {
-      "types": "./dist/decodeJwt.d.ts",
-      "default": "./dist/decodeJwt.js"
+      "import": {
+        "types": "./dist/esm/decodeJwt.d.ts",
+        "default": "./dist/esm/decodeJwt.js"
+      },
+      "require": {
+        "types": "./dist/cjs/decodeJwt.d.ts",
+        "default": "./dist/cjs/decodeJwt.js"
+      }
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:esm && npm run build:cjs && npm run postbuild",
+    "build:esm": "tsc --outDir dist/esm",
+    "build:cjs": "node build-cjs.js && tsc --outDir dist/cjs --declaration --emitDeclarationOnly",
+    "postbuild": "echo '{\"type\": \"commonjs\"}' > dist/cjs/package.json",
     "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -37,6 +58,7 @@
     "typescript": "5.8.3"
   },
   "devDependencies": {
+    "esbuild": "^0.25.5",
     "vitest": "^1.1.0"
   },
   "dependencies": {
