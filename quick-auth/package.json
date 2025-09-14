@@ -1,6 +1,6 @@
 {
   "name": "@farcaster/quick-auth",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Client for Farcaster Quick Auth",
   "repository": {
     "type": "git",
