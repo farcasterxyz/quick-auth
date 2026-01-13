@@ -17,8 +17,8 @@ importers:
         specifier: workspace:*
         version: link:../quick-auth
       hono:
-        specifier: ^4.7.8
-        version: 4.7.9
+        specifier: ^4.11.4
+        version: 4.11.4
       jose:
         specifier: ^5.2.3
         version: 5.10.0
@@ -1195,8 +1195,8 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  hono@4.7.9:
-    resolution: {integrity: sha512-/EsCoR5h7N4yu01TDu9GMCCJa6ZLk5ZJIWFFGNawAXmd1Tp53+Wir4xm0D2X19bbykWUlzQG0+BvPAji6p9E8Q==}
+  hono@4.11.4:
+    resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
     engines: {node: '>=16.9.0'}
 
   html-escaper@2.0.2:
@@ -2633,7 +2633,7 @@ snapshots:
 
   has-flag@4.0.0: {}
 
-  hono@4.7.9: {}
+  hono@4.11.4: {}
 
   html-escaper@2.0.2: {}
 
