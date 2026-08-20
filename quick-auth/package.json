@@ -1,71 +1,12 @@
 {
-  "name": "@farcaster/quick-auth",
-  "version": "0.0.8",
-  "description": "Client for Farcaster Quick Auth",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/farcasterxyz/quick-auth.git",
-    "directory": "quick-auth"
-  },
+  "private": true,
   "type": "module",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      }
-    },
-    "./light": {
-      "import": {
-        "types": "./dist/esm/lightClient.d.ts",
-        "default": "./dist/esm/lightClient.js"
-      },
-      "require": {
-        "types": "./dist/cjs/lightClient.d.ts",
-        "default": "./dist/cjs/lightClient.js"
-      }
-    },
-    "./decodeJwt": {
-      "import": {
-        "types": "./dist/esm/decodeJwt.d.ts",
-        "default": "./dist/esm/decodeJwt.js"
-      },
-      "require": {
-        "types": "./dist/cjs/decodeJwt.d.ts",
-        "default": "./dist/cjs/decodeJwt.js"
-      }
-    }
+  "engines": {
+    "node": "23.x"
   },
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs && npm run postbuild",
-    "build:esm": "tsc --outDir dist/esm",
-    "build:cjs": "node build-cjs.js && tsc --outDir dist/cjs --declaration --emitDeclarationOnly",
-    "postbuild": "echo '{\"type\": \"commonjs\"}' > dist/cjs/package.json",
-    "clean": "rm -rf dist",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
-  },
-  "license": "MIT",
-  "peerDependencies": {
-    "typescript": "5.8.3"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.5",
-    "vitest": "^1.1.0"
-  },
-  "dependencies": {
-    "jose": "^5.8.0",
-    "zod": "^3.25.1"
-  },
-  "files": [
-    "dist"
-  ]
+    "build": "pnpm --filter 'quick-auth' build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  }
 }

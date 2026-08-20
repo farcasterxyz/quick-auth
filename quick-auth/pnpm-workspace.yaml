@@ -1,0 +1,5 @@
+packages:
+  - 'hono-cloudflare-worker'
+  - 'quick-auth'
+overrides:
+  ws: '^8.21.0'
