@@ -33,35 +33,27 @@ export async function verifyMessage(
     return { isValid: false, reason: 'invalid_nonce' }
   }
 
-  // Juice perf by performing this operations in parallel
-  const [verifyResult, consumedNonce] = await Promise.all([
-    (async (nonce) => {
-      const verifyStart = Date.now();
-      const verifyResult = await appClient.verifySignInMessage({
-        nonce,
-        domain,
-        message,
-        signature: signature as Hex,
-        acceptAuthAddress,
-      })
-      console.log({ action: 'verifySignInMessage', duration: Date.now() - verifyStart });
-      return verifyResult;
-    })(siweMessage.nonce),
-    (async (nonce) => {
-      const consumeStart = Date.now();
-      const nonceResult = await consumeNonce(env, nonce)
-      console.log({ action: 'consumeNonce', duration: Date.now() - consumeStart });
-
-      return nonceResult;
-    })(siweMessage.nonce)
-  ])
-
-  if (!consumedNonce) {
-    return { isValid: false, reason: 'invalid_nonce', message: 'Invalid nonce' }
-  }
+  // Verify the signature before consuming the nonce so invalid requests cannot burn valid nonces.
+  const verifyStart = Date.now();
+  const verifyResult = await appClient.verifySignInMessage({
+    nonce: siweMessage.nonce,
+    domain,
+    message,
+    signature: signature as Hex,
+    acceptAuthAddress,
+  });
+  console.log({ action: 'verifySignInMessage', duration: Date.now() - verifyStart });
 
   if (verifyResult.isError) {
     return { isValid: false, reason: 'invalid_signature', message: verifyResult.error?.message }
+  }
+
+  const consumeStart = Date.now();
+  const consumedNonce = await consumeNonce(env, siweMessage.nonce);
+  console.log({ action: 'consumeNonce', duration: Date.now() - consumeStart });
+
+  if (!consumedNonce) {
+    return { isValid: false, reason: 'invalid_nonce', message: 'Invalid nonce' }
   }
 
   return { isValid: true, fid: verifyResult.fid, address: (siweMessage as SiweMessage).address }
