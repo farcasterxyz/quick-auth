@@ -91,9 +91,10 @@ app.post('/verify-siwf',
 
       return c.json({ valid: true, token });
     } catch (error) {
-      console.error('error verifying message');
-      return c.json({ error: `failed to verify message: ${error}` }, 500);
+      console.error('Error verifying message:', error);
+      return c.json({ error: 'Failed to verify message' }, 500);
     }
+
   });
 
 app.get(
