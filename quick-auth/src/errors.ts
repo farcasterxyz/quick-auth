@@ -74,10 +74,24 @@ export class InvalidSiwfError extends BaseError {
 
 export class InvalidTokenError extends BaseError {
   override readonly name = 'InvalidToken'
+  readonly reason: InvalidTokenError.Reason
 
-  constructor(message: string) {
+  constructor(
+    message: string,
+    reason: InvalidTokenError.Reason = 'unknown',
+  ) {
     super(message)
+    this.reason = reason
   }
+}
+
+export declare namespace InvalidTokenError {
+  type Reason =
+    | 'expired'
+    | 'invalid_signature'
+    | 'domain_mismatch'
+    | 'malformed'
+    | 'unknown'
 }
 
 export class InvalidParametersError extends BaseError {
