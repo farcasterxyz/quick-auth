@@ -16,7 +16,7 @@
     "hono": "^4.7.8",
     "jose": "^5.2.3",
     "viem": "^2.29.0",
-    "zod": "^3.25.1"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.8.30",
