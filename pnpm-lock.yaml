@@ -53,9 +53,6 @@ importers:
       jose:
         specifier: ^5.8.0
         version: 5.10.0
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       zod:
         specifier: ^3.25.1
         version: 3.25.1
@@ -63,6 +60,9 @@ importers:
       esbuild:
         specifier: ^0.25.5
         version: 0.25.9
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
       vitest:
         specifier: ^1.1.0
         version: 1.6.1(@types/node@22.15.18)
