@@ -21,9 +21,18 @@ vi.mock('jose', () => ({
       }
     },
     JWTClaimValidationFailed: class JWTClaimValidationFailed extends Error {
+      claim: string;
+
       constructor(message: string) {
         super(message);
         this.name = 'JWTClaimValidationFailed';
+        this.claim = 'claim';
+      }
+    },
+    JWSSignatureVerificationFailed: class JWSSignatureVerificationFailed extends Error {
+      constructor(message: string) {
+        super(message);
+        this.name = 'JWSSignatureVerificationFailed';
       }
     }
   }
@@ -90,8 +99,11 @@ describe('verifyJwtWithJwks', () => {
     const jwtError = new errors.JWTInvalid('Invalid JWT format');
     mockJwtVerify.mockRejectedValue(jwtError);
 
-    await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow(InvalidTokenError);
-    await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow('Invalid JWT format');
+    const error = await verifyJwtWithJwks(mockConfig, mockOptions).catch(error => error);
+
+    expect(error).toBeInstanceOf(InvalidTokenError);
+    expect(error.message).toContain('Invalid JWT format');
+    expect(error.reason).toBe('malformed');
   });
 
   it('should throw InvalidTokenError for JWTExpired error', async () => {
@@ -99,17 +111,48 @@ describe('verifyJwtWithJwks', () => {
     const jwtError = new errors.JWTExpired('JWT has expired', {});
     mockJwtVerify.mockRejectedValue(jwtError);
 
-    await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow(InvalidTokenError);
-    await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow('JWT has expired');
+    const error = await verifyJwtWithJwks(mockConfig, mockOptions).catch(error => error);
+
+    expect(error).toBeInstanceOf(InvalidTokenError);
+    expect(error.message).toContain('JWT has expired');
+    expect(error.reason).toBe('expired');
   });
 
-  it('should throw InvalidTokenError for JWTClaimValidationFailed error', async () => {
+  it('should expose domain_mismatch for an invalid audience', async () => {
     const mockJwtVerify = vi.mocked(jwtVerify);
     const jwtError = new errors.JWTClaimValidationFailed('Claim validation failed', {});
+    jwtError.claim = 'aud';
     mockJwtVerify.mockRejectedValue(jwtError);
 
-    await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow(InvalidTokenError);
-    await expect(verifyJwtWithJwks(mockConfig, mockOptions)).rejects.toThrow('Claim validation failed');
+    const error = await verifyJwtWithJwks(mockConfig, mockOptions).catch(error => error);
+
+    expect(error).toBeInstanceOf(InvalidTokenError);
+    expect(error.message).toContain('Claim validation failed');
+    expect(error.reason).toBe('domain_mismatch');
+  });
+
+  it('should expose malformed for other invalid claims', async () => {
+    const mockJwtVerify = vi.mocked(jwtVerify);
+    const jwtError = new errors.JWTClaimValidationFailed('Missing subject', {});
+    jwtError.claim = 'sub';
+    mockJwtVerify.mockRejectedValue(jwtError);
+
+    const error = await verifyJwtWithJwks(mockConfig, mockOptions).catch(error => error);
+
+    expect(error).toBeInstanceOf(InvalidTokenError);
+    expect(error.reason).toBe('malformed');
+  });
+
+  it('should expose invalid_signature for signature verification failures', async () => {
+    const mockJwtVerify = vi.mocked(jwtVerify);
+    const jwtError = new errors.JWSSignatureVerificationFailed('signature verification failed');
+    mockJwtVerify.mockRejectedValue(jwtError);
+
+    const error = await verifyJwtWithJwks(mockConfig, mockOptions).catch(error => error);
+
+    expect(error).toBeInstanceOf(InvalidTokenError);
+    expect(error.message).toContain('signature verification failed');
+    expect(error.reason).toBe('invalid_signature');
   });
 
   it('should re-throw non-JWT errors', async () => {
