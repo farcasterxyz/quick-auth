@@ -1,0 +1,86 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Build, test and pack without publishing
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish @farcaster/quick-auth
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    # Gated by required reviewers and a main-only branch policy. npm's trusted
+    # publisher config for this package is bound to this workflow and environment.
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC) and provenance
+
+    steps:
+      - name: Require main
+        if: github.ref != 'refs/heads/main'
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          echo "::error::Publishing is only allowed from main, not $REF"
+          exit 1
+
+      - name: Clone repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 10.8.0
+
+      # No registry-url and no NODE_AUTH_TOKEN: npm >= 11.5.1 exchanges the
+      # workflow's OIDC token for a short-lived publish credential, so no npm
+      # token exists anywhere.
+      - name: Set up node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Check version is unpublished
+        working-directory: quick-auth
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "::error::$name@$version is already published"
+            exit 1
+          fi
+          echo "Publishing $name@$version"
+
+      - name: Publish
+        working-directory: quick-auth
+        env:
+          DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            npm publish --dry-run --access public
+          else
+            npm publish --access public
+          fi
