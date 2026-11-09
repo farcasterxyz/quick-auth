@@ -16,7 +16,7 @@
     "hono": "^4.13.14",
     "jose": "^5.2.3",
     "viem": "^2.29.0",
-    "zod": "^3.25.1"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@cloudflare/vitest-plugin": "1.4.11",
