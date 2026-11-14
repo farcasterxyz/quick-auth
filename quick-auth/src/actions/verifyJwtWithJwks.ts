@@ -34,15 +34,25 @@ export async function verifyJwtWithJwks({ origin }: Config, options: verifyJwtWi
 
     return payload;
   } catch (error) {
-    if (
-      error instanceof errors.JWTInvalid
-      || error instanceof errors.JWTExpired
-      || error instanceof errors.JWTClaimValidationFailed
-    ) {
-      throw new InvalidTokenError(error.message)
+    if (error instanceof errors.JWTExpired) {
+      throw new InvalidTokenError(error.message, 'expired')
+    }
+
+    if (error instanceof errors.JWSSignatureVerificationFailed) {
+      throw new InvalidTokenError(error.message, 'invalid_signature')
+    }
+
+    if (error instanceof errors.JWTClaimValidationFailed) {
+      const reason = error.claim === 'aud'
+        ? 'domain_mismatch'
+        : 'malformed'
+      throw new InvalidTokenError(error.message, reason)
+    }
+
+    if (error instanceof errors.JWTInvalid) {
+      throw new InvalidTokenError(error.message, 'malformed')
     }
 
     throw error
   }
 }
-
